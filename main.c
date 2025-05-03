@@ -1,52 +1,66 @@
 #include "tinycli.h"
 
+#include <stdbool.h>
+
+// GLOBAL STATE
 Screen currentScreen;
-Screen foodScreen;
-Screen pizzaScreen;
+Screen mainScreen;
+Screen settingsScreen;
 
-void default_option_callback();
-void pizza();
+bool running = true;
 
-Option FoodOptions[3] = {
+// OPTION CALLBACKS
+void print_something();
+void main_menu_screen();
+void settings_screen();
+void exit_cli();
+
+Option mainOptions[3] = {
     {
-        .text = "Pizza",
-        .callback = pizza
+        .text = "Print Something",
+        .callback = print_something
     },
     {
-        .text = "Salad",
-        .callback = default_option_callback
+        .text = "Goto Settings Screen",
+        .callback = settings_screen
     },
     {
-        .text = "Pretzels",
-        .callback = default_option_callback
-    },
-};
-
-Option PizzaOptions[1] = {
-    {
-        .text = "Pepperoni",
-        .callback = default_option_callback
+        .text = "Exit",
+        .callback = exit_cli
     },
 };
 
-void default_option_callback() {
-    screen_switch(&currentScreen, &foodScreen);
+Option settingsOptions[1] = {
+    {
+        .text = "Goto Main Menu Screen",
+        .callback = main_menu_screen
+    },
+};
+
+void print_something() {
+    printf("something\n");
 }
 
-void pizza() {
-    screen_switch(&currentScreen, &pizzaScreen);
+void main_menu_screen() {
+    screen_switch(&currentScreen, &mainScreen);
+}
+
+void settings_screen() {
+    screen_switch(&currentScreen, &settingsScreen);
+}
+
+void exit_cli() {
+    printf("exiting cli...\n");
+    running = false;
 }
 
 int main(void) {
-    screen_create(&foodScreen, "Food Options", FoodOptions, 3);
-    screen_create(&pizzaScreen, "Pizza Options", PizzaOptions, 1);
-    screen_switch(&currentScreen, &foodScreen);
+    screen_create(&mainScreen, "Main Menu", mainOptions, 3);
+    screen_create(&settingsScreen, "Settings", settingsOptions, 1);
+    screen_switch(&currentScreen, &mainScreen);
 
-    while (1) {
-        uint8_t selection = screen_handle_input(&currentScreen);
-        if (selection > 0) {
-            currentScreen.options[selection-1].callback();
-        }
+    while (running) {
+        screen_update(&currentScreen);
     }
 
     return 0;

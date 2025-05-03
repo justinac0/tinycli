@@ -23,6 +23,7 @@ typedef struct {
 } Screen;
 
 void screen_create(Screen *screen, uint8_t *header, Option *options, uint8_t count);
+void screen_update(Screen *screen);
 void screen_draw(Screen *screen);
 uint8_t screen_handle_input(Screen *screen);
 void screen_switch(Screen *current, Screen *next);
@@ -41,6 +42,13 @@ void screen_create(Screen* screen, uint8_t *header, Option *options, uint8_t cou
     memset(screen->header, 0, MAX_STR_LEN+1);
     memcpy(screen->header, header, length);
     screen->options = options;
+}
+
+void screen_update(Screen *screen) {
+    uint8_t selection = screen_handle_input(screen);
+    if (selection > 0) {
+        screen->options[selection-1].callback();
+    }
 }
 
 void screen_draw(Screen *screen) {
