@@ -35,14 +35,11 @@ void default_option_callback() {
 
 void pizza() {
     screen_switch(&currentScreen, &pizzaScreen);
-    for (int i = 0; i < 10; i++) {
-        printf("random functionality: %d\n", i);
-    }
 }
 
 int main(void) {
-    screen_create(&foodScreen, FoodOptions, 3);
-    screen_create(&pizzaScreen, PizzaOptions, 1);
+    screen_create(&foodScreen, "Food Options", FoodOptions, 3);
+    screen_create(&pizzaScreen, "Pizza Options", PizzaOptions, 1);
     screen_switch(&currentScreen, &foodScreen);
 
     while (1) {
